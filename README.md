@@ -1,1 +1,1 @@
-# javascript-tp1-drumsKit
+# Correction TP1 JavaScript HB 2018
