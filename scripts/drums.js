@@ -1,4 +1,5 @@
-const drumsKit = [{
+const drumsKit = [
+{
     id: 0,
     name: 'drum1',
     color: '#1478AA',

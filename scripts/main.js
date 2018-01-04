@@ -38,6 +38,25 @@ function printArray2(arrayObj) {
     });
 }
 
+// version 3
+function printArray3(array) {
+    for (let i = 0 ; i < array.length ; i++){
+        console.log('[index : ' + i + ' ]');
+
+		// Object.entries ==> [['id', 1], ['color', 'blue'] ...]
+        Object.entries(array[i]).forEach(([key, value]) => {
+            if (typeof value !== 'object'){
+                console.log('\t'+ key + ' :  ' + value);
+            }
+            else {
+                Object.entries(value).forEach(([key2, value2]) => {
+                	console.log('\t\t' + key +'.'+ key2 + ' :  ' + value2);
+                });
+            }
+        });
+    }
+}
+
 
 /*FIND BY*/
 
@@ -65,12 +84,20 @@ function findBy2(arr, prop, val) {
     return results;
 }
 
-//version 2 with filter
+//version 3 with filter
 function findBy3(arr, property, value) {
-    return arr.filter(function(obj) {
+	let result = arr.filter(function(obj) {
         return (obj[property] === value);
     });
+    return result;
 }
+
+//version 4 Ninja
+function findBy4(arr, property, value) {
+    return arr.filter(obj => obj[property] === value);
+}
+
+
 
 //examples findby
 /*
@@ -178,15 +205,35 @@ printArrayLabel('SORT by color >>', drumsKit.sort(compareByColor));
 
 console.log('\n>>>>>>> B - REMOVE\n');
 
-/*Remove by passing an object as argument*/
+
+/*Remove by passing an id as argument*/
+
+function removeById(arr, id) {
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[i].id == id) { //we found the obj
+			arr.splice(i, 1); //we remove the object
+			return; //then we "break", "return"
+		}
+	}
+}
 
 function removeByObject(arr, obj) {
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] == obj) { //we found the obj
-            arr.splice(i, 1); //we remove the object
-            return; //then we "break", "return"
-        }
-    }
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[i] == obj) { //we found the obj
+			arr.splice(i, 1); //we remove the object
+			return; //then we "break", "return"
+		}
+	}
+}
+
+function remove(arr, idOrObject) {
+	if (typeof idOrObject == 'number') {
+		removeById(arr, idOrObject);
+	} else if (typeof idOrObject === 'object') {
+		removeByObject(arr, idOrObject);
+	} else {
+		console.log("second arg is of unauthorized type");
+	}
 }
 
 //shortCut version with indexOf
@@ -197,33 +244,26 @@ function removeByObject2(arr, obj) {
     }
 }
 
+// Safa Version
+function removeV2(array, item){
+	let res = [];
+	if (isNaN(item)){
+		// item = object
+		res = array.filter(element => element.id !== item.id);
+	} else{
+		// item = id
+   		res = array.filter(element => element.id !== item);
+  	}
+	return res;
+}
 
-/*Remove by passing an id as argument*/
-
-function removeById(arr, id) {
-    let drumToRemove;
-    let results = findBy1(arr, 'id', id);
-    // findBy returns an array... and the elem searched is maybe not in the array
-    if (results.length > 0) drumToRemove = results[0];
-    //we found the drum to remove so we reuse the previous function
-    removeByObject(arr, drumToRemove);
+// <==>
+function removeV2bis(arr, item){
+	return arr.filter(elem => elem.id !== isNaN(item) ? item : item.id);
 }
 
 
-/*removes an object from the array by its id or itself*/
-
-function remove(arr, idOrObject) {
-    if (typeof idOrObject == 'number') {
-        removeById(arr, idOrObject);
-    } else if (typeof idOrObject === 'object') {
-        removeByObject(arr, idOrObject);
-    } else {
-        console.log("second arg is of unauthorized type");
-    }
-}
-
-
-console.log("Removing element at index 1 from drumsKit");
+console.log("Removing element with id 1 from drumsKit");
 remove(drumsKit, 1);
 printArrayLabel("new DrumsKit >>", drumsKit);
 
